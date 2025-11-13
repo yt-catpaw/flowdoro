@@ -1,16 +1,13 @@
 import TimerControls from "@/components/TimerControls";
+import TimerDial from "@/components/timer/TimerDial";
 
 const focusMinutes = 25;
-const progress = 0.68; // how much of the session has elapsed
+const progress = 0.68;
 
 const cardShadow =
   "35px 35px 70px rgba(165, 201, 223, 0.65), -25px -25px 60px rgba(255, 255, 255, 0.9)";
-const dialShadow =
-  "inset 18px 18px 35px rgba(156, 191, 212, 0.35), inset -18px -18px 35px rgba(255, 255, 255, 0.9)";
 
 export default function Home() {
-  const progressDeg = progress * 360;
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#e8f6ff] px-4 py-16 text-sky-950">
       <div className="flex w-full max-w-xl flex-col items-center gap-10 text-center lg:max-w-[1100px] lg:gap-16">
@@ -25,23 +22,7 @@ export default function Home() {
           style={{ boxShadow: cardShadow }}
         >
           <div className="flex flex-col items-center gap-8">
-            <div
-              className="relative h-64 w-64 rounded-full bg-white/60 lg:h-80 lg:w-80"
-              style={{
-                background: `conic-gradient(#3fb5ff ${progressDeg}deg, rgba(255,255,255,0.4) ${progressDeg}deg 360deg)`,
-                boxShadow: dialShadow,
-              }}
-            >
-              <div className="absolute inset-4 rounded-full bg-white/80 shadow-inner" />
-              <div className="absolute inset-4 flex items-center justify-center lg:inset-6">
-                <span className="text-6xl font-semibold text-sky-800 lg:text-7xl">
-                  {String(focusMinutes).padStart(2, "0")}:00
-                </span>
-              </div>
-              <div className="absolute inset-6">
-                <div className="absolute right-3 top-3 h-5 w-10 rounded-full bg-white/60 blur-[6px]" />
-              </div>
-            </div>
+            <TimerDial minutes={focusMinutes} progress={progress} />
 
             <TimerControls />
           </div>
