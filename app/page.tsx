@@ -1,3 +1,5 @@
+import TimerControls from "@/components/TimerControls";
+
 const focusMinutes = 25;
 const progress = 0.68; // how much of the session has elapsed
 
@@ -5,60 +7,6 @@ const cardShadow =
   "35px 35px 70px rgba(165, 201, 223, 0.65), -25px -25px 60px rgba(255, 255, 255, 0.9)";
 const dialShadow =
   "inset 18px 18px 35px rgba(156, 191, 212, 0.35), inset -18px -18px 35px rgba(255, 255, 255, 0.9)";
-
-const buttons = [
-  {
-    label: "Restart",
-    icon: (
-      <svg
-        aria-hidden
-        viewBox="0 0 24 24"
-        className="h-9 w-9 stroke-current lg:h-11 lg:w-11"
-        strokeWidth="2"
-        fill="none"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 5c3.866 0 7 3.134 7 7s-3.134 7-7 7"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 5c-3.2 0-6.2 1.5-8.2 4L2.5 10.7"
-        />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 5v4h4" />
-      </svg>
-    ),
-  },
-  {
-    label: "Play",
-    icon: (
-      <svg
-        aria-hidden
-        viewBox="0 0 24 24"
-        className="h-14 w-14 fill-current lg:h-16 lg:w-16"
-      >
-        <path d="M9 7.5v9l7.5-4.5L9 7.5Z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Pause",
-    icon: (
-      <svg
-        aria-hidden
-        viewBox="0 0 24 24"
-        className="h-10 w-10 stroke-current lg:h-12 lg:w-12"
-        strokeWidth="2.2"
-        fill="none"
-      >
-        <path d="M9 7v10" strokeLinecap="round" />
-        <path d="M15 7v10" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-];
 
 export default function Home() {
   const progressDeg = progress * 360;
@@ -95,21 +43,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex gap-5 lg:gap-8">
-              {buttons.map(({ label, icon }) => (
-                <button
-                  key={label}
-                  aria-label={label}
-                  className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-sky-600 transition hover:-translate-y-0.5 hover:text-sky-800 lg:h-20 lg:w-20"
-                  style={{
-                    boxShadow:
-                      "10px 10px 25px rgba(168, 204, 226, 0.6), -10px -10px 25px rgba(255, 255, 255, 0.8)",
-                  }}
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
+            <TimerControls />
           </div>
         </div>
       </div>
