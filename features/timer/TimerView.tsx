@@ -8,7 +8,7 @@ const cardShadow =
   "35px 35px 70px rgba(165, 201, 223, 0.65), -25px -25px 60px rgba(255, 255, 255, 0.9)";
 
 export default function TimerView() {
-  const { formattedTime, start } = useTimer();
+  const { formattedTime, start, pause } = useTimer();
   const [minutes = "00", seconds = "00"] = formattedTime.split(":");
 
   return (
@@ -18,7 +18,7 @@ export default function TimerView() {
     >
       <div className="flex flex-col items-center gap-8">
         <TimerDial minutes={minutes} seconds={seconds} progress={0} />
-        <TimerControls onPlay={() => start(1500)} />
+        <TimerControls onPlay={() => start()} onPause={pause} />
       </div>
     </div>
   );
