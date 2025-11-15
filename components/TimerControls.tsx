@@ -1,8 +1,15 @@
 import CircleButton from "@/components/ui/button/CircleButton";
 
+type TimerControlsProps = {
+  onRestart?: () => void;
+  onPlay?: () => void;
+  onPause?: () => void;
+};
+
 const buttons = [
   {
     label: "Restart",
+    action: "restart" as const,
     icon: (
       <svg
         aria-hidden
@@ -27,6 +34,7 @@ const buttons = [
   },
   {
     label: "Play",
+    action: "play" as const,
     icon: (
       <svg
         aria-hidden
@@ -39,6 +47,7 @@ const buttons = [
   },
   {
     label: "Pause",
+    action: "pause" as const,
     icon: (
       <svg
         aria-hidden
@@ -54,14 +63,37 @@ const buttons = [
   },
 ] as const;
 
-export default function TimerControls() {
+export default function TimerControls({
+  onRestart,
+  onPlay,
+  onPause,
+}: TimerControlsProps) {
   return (
     <div className="flex gap-5 lg:gap-8">
-      {buttons.map(({ label, icon }) => (
-        <CircleButton key={label} aria-label={label}>
-          {icon}
-        </CircleButton>
-      ))}
+      {buttons.map(({ label, icon, action }) => {
+        let handleClick: (() => void) | undefined;
+
+        if (action === "play") {
+          handleClick = onPlay;
+        } else if (action === "pause") {
+          handleClick = onPause;
+        } else {
+          handleClick = onRestart;
+        }
+
+        const isDisabled = !handleClick;
+
+        return (
+          <CircleButton
+            key={label}
+            aria-label={label}
+            onClick={handleClick}
+            disabled={isDisabled}
+          >
+            {icon}
+          </CircleButton>
+        );
+      })}
     </div>
   );
 }
