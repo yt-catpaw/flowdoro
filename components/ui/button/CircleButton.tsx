@@ -12,12 +12,14 @@ export default function CircleButton({
   children,
   className = "",
   shadow = defaultShadow,
+  disabled,
   ...props
 }: CircleButtonProps) {
   return (
     <button
-      className={`flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-sky-600 transition hover:-translate-y-0.5 hover:text-sky-800 lg:h-20 lg:w-20 ${className}`}
+      className={`flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-sky-600 transition hover:-translate-y-0.5 hover:text-sky-800 disabled:opacity-40 disabled:hover:translate-y-0 lg:h-20 lg:w-20 ${className}`}
       style={{ boxShadow: shadow }}
+      disabled={disabled}
       {...props}
     >
       {children}

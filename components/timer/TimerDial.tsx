@@ -1,12 +1,13 @@
 type TimerDialProps = {
-  minutes: number;
+  minutes: string;
+  seconds: string;
   progress: number; // 0 - 1
 };
 
 const dialShadow =
   "inset 18px 18px 35px rgba(156, 191, 212, 0.35), inset -18px -18px 35px rgba(255, 255, 255, 0.9)";
 
-export default function TimerDial({ minutes, progress }: TimerDialProps) {
+export default function TimerDial({ minutes, seconds, progress }: TimerDialProps) {
   const progressDeg = progress * 360;
 
   return (
@@ -20,7 +21,7 @@ export default function TimerDial({ minutes, progress }: TimerDialProps) {
       <div className="absolute inset-4 rounded-full bg-white/80 shadow-inner" />
       <div className="absolute inset-4 flex items-center justify-center lg:inset-6">
         <span className="text-6xl font-semibold text-sky-800 lg:text-7xl">
-          {String(minutes).padStart(2, "0")}:00
+          {minutes}:{seconds}
         </span>
       </div>
       <div className="absolute inset-6">
