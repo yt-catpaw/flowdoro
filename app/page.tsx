@@ -1,11 +1,4 @@
-import TimerControls from "@/components/TimerControls";
-import TimerDial from "@/components/timer/TimerDial";
-
-const focusMinutes = 25;
-const progress = 0.68;
-
-const cardShadow =
-  "35px 35px 70px rgba(165, 201, 223, 0.65), -25px -25px 60px rgba(255, 255, 255, 0.9)";
+import TimerView from "@/features/timer/TimerView";
 
 export default function Home() {
   return (
@@ -17,16 +10,7 @@ export default function Home() {
           </p>
         </header>
 
-        <div
-          className="w-full rounded-[48px] bg-[#c8ecff]/80 px-10 py-12 shadow-2xl sm:px-16 lg:rounded-[56px] lg:px-24 lg:py-16"
-          style={{ boxShadow: cardShadow }}
-        >
-          <div className="flex flex-col items-center gap-8">
-            <TimerDial minutes={focusMinutes} progress={progress} />
-
-            <TimerControls />
-          </div>
-        </div>
+        <TimerView />
       </div>
     </div>
   );
