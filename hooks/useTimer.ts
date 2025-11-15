@@ -52,6 +52,15 @@ export default function useTimer(initialSeconds = 1500) {
     clearRunningTimer();
   };
 
+  const restart = (seconds?: number) => {
+    const duration = typeof seconds === "number" ? seconds : lastDurationRef.current;
+    if (duration <= 0) return;
+    lastDurationRef.current = duration;
+    setRemainingSeconds(duration);
+    clearRunningTimer();
+    start(duration);
+  };
+
   useEffect(() => {
     return () => {
       clearRunningTimer();
@@ -63,5 +72,6 @@ export default function useTimer(initialSeconds = 1500) {
     formattedTime: formatSeconds(remainingSeconds),
     start,
     pause,
+    restart,
   };
 }
