@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
+
 import TimerControls from "@/components/TimerControls";
 import TimerDial from "@/components/timer/TimerDial";
 import useTimer from "@/hooks/useTimer";
+import { requestSoundPermission } from "@/lib/sound";
 
 const cardShadow =
   "35px 35px 70px rgba(165, 201, 223, 0.65), -25px -25px 60px rgba(255, 255, 255, 0.9)";
@@ -10,6 +13,10 @@ const cardShadow =
 export default function TimerView() {
   const { formattedTime, start, pause, restart } = useTimer();
   const [minutes = "00", seconds = "00"] = formattedTime.split(":");
+
+  useEffect(() => {
+    requestSoundPermission();
+  }, []);
 
   return (
     <div

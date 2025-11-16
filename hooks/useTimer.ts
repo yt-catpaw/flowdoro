@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { formatSeconds, tickTimer } from "@/lib/timer";
+import { playSound } from "@/lib/sound";
 
 export default function useTimer(initialSeconds = 1500) {
   const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds);
@@ -42,6 +43,7 @@ export default function useTimer(initialSeconds = 1500) {
         const next = tickTimer(prevSeconds, 1000);
         if (next === 0) {
           clearRunningTimer();
+          playSound("/sounds/break_start.mp3");
         }
         return next;
       });
@@ -53,7 +55,8 @@ export default function useTimer(initialSeconds = 1500) {
   };
 
   const restart = (seconds?: number) => {
-    const duration = typeof seconds === "number" ? seconds : lastDurationRef.current;
+    const duration =
+      typeof seconds === "number" ? seconds : lastDurationRef.current;
     if (duration <= 0) return;
     lastDurationRef.current = duration;
     setRemainingSeconds(duration);
