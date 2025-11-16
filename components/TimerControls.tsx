@@ -4,6 +4,7 @@ type TimerControlsProps = {
   onRestart?: () => void;
   onPlay?: () => void;
   onPause?: () => void;
+  variant?: "focus" | "break";
 };
 
 const buttons = [
@@ -67,7 +68,13 @@ export default function TimerControls({
   onRestart,
   onPlay,
   onPause,
+  variant = "focus",
 }: TimerControlsProps) {
+  const colorClass =
+    variant === "break"
+      ? "text-emerald-600 hover:text-emerald-800"
+      : "text-sky-600 hover:text-sky-800";
+
   return (
     <div className="flex gap-5 lg:gap-8">
       {buttons.map(({ label, icon, action }) => {
@@ -89,6 +96,7 @@ export default function TimerControls({
             aria-label={label}
             onClick={handleClick}
             disabled={isDisabled}
+            colorClass={colorClass}
           >
             {icon}
           </CircleButton>
