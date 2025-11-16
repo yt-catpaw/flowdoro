@@ -7,6 +7,7 @@ type TimerStatus = "idle" | "running" | "paused";
 
 export default function useTimer(initialSeconds = 1500) {
   const [mode, setMode] = useState<TimerMode>("focus");
+  const [durationSeconds, setDurationSeconds] = useState(initialSeconds);
   const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds);
   const [status, setStatus] = useState<TimerStatus>("idle");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -34,6 +35,7 @@ export default function useTimer(initialSeconds = 1500) {
     (targetMode: TimerMode) => {
       const duration = getDurationByMode(targetMode);
       setMode(targetMode);
+      setDurationSeconds(duration);
       setRemainingSeconds(duration);
     },
     [getDurationByMode]
@@ -107,6 +109,10 @@ export default function useTimer(initialSeconds = 1500) {
   return {
     remainingSeconds,
     formattedTime: formatSeconds(remainingSeconds),
+    progress:
+      durationSeconds === 0
+        ? 0
+        : (durationSeconds - remainingSeconds) / durationSeconds,
     mode,
     status,
     start,
