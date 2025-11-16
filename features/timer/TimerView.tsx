@@ -30,7 +30,7 @@ const themes = {
 };
 
 export default function TimerView() {
-  const { formattedTime, start, pause, restart, mode } = useTimer();
+  const { formattedTime, start, pause, restart, mode, progress } = useTimer();
   const [minutes = "00", seconds = "00"] = formattedTime.split(":");
   const theme = themes[mode];
 
@@ -52,7 +52,7 @@ export default function TimerView() {
         <TimerDial
           minutes={minutes}
           seconds={seconds}
-          progress={0}
+          progress={progress}
           variant={theme.dialVariant}
         />
         <TimerControls
