@@ -1,78 +1,114 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { formatSeconds, tickTimer } from "@/lib/timer";
 import { playSound } from "@/lib/sound";
 
-export default function useTimer(initialSeconds = 1500) {
-  const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const lastDurationRef = useRef(initialSeconds);
+type TimerMode = "focus" | "break";
+type TimerStatus = "idle" | "running" | "paused";
 
-  const clearRunningTimer = () => {
+export default function useTimer(initialSeconds = 1500) {
+  const [mode, setMode] = useState<TimerMode>("focus");
+  const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds);
+  const [status, setStatus] = useState<TimerStatus>("idle");
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const modeRef = useRef<TimerMode>("focus");
+  const completionRef = useRef<() => void>(() => {});
+
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+
+  const getDurationByMode = useCallback(
+    (targetMode: TimerMode) =>
+      targetMode === "focus" ? initialSeconds : 5 * 60,
+    [initialSeconds]
+  );
+
+  const clearRunningTimer = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  };
+  }, []);
 
-  const start = (newSeconds?: number) => {
-    const nextSeconds = (() => {
-      // 1. start(600) のように引数があれば、その秒数でリセットしてスタート
-      if (typeof newSeconds === "number") {
-        return newSeconds;
-      }
-      // 2. 引数なしで再生ボタンを押し、現在の残り時間が 0（完走した直後）なら、
-      //    そのタイマーを最後に開始したときの秒数（lastDurationRef）で再スタートする
-      if (remainingSeconds === 0) {
-        return lastDurationRef.current;
-      }
-      // 3. それ以外は現在の残り秒数（停止位置）から再開
-      return remainingSeconds;
-    })();
+  const setModeState = useCallback(
+    (targetMode: TimerMode) => {
+      const duration = getDurationByMode(targetMode);
+      setMode(targetMode);
+      setRemainingSeconds(duration);
+    },
+    [getDurationByMode]
+  );
 
-    if (nextSeconds <= 0) return;
-
-    if (typeof newSeconds === "number") {
-      lastDurationRef.current = newSeconds;
-    }
-
-    setRemainingSeconds(nextSeconds);
+  const runInterval = useCallback(() => {
     clearRunningTimer();
-
     intervalRef.current = setInterval(() => {
+      let completed = false;
+
       setRemainingSeconds((prevSeconds) => {
         const next = tickTimer(prevSeconds, 1000);
         if (next === 0) {
-          clearRunningTimer();
-          playSound("/sounds/break_start.mp3");
+          completed = true;
         }
         return next;
       });
+
+      if (completed) {
+        clearRunningTimer();
+        completionRef.current();
+      }
     }, 1000);
-  };
+  }, [clearRunningTimer]);
 
-  const pause = () => {
-    clearRunningTimer();
-  };
+  useEffect(() => {
+    completionRef.current = () => {
+      const completedMode = modeRef.current;
+      const nextMode = completedMode === "focus" ? "break" : "focus";
+      const sound =
+        completedMode === "focus"
+          ? "/sounds/break_start.mp3"
+          : "/sounds/break_end.mp3";
 
-  const restart = (seconds?: number) => {
-    const duration =
-      typeof seconds === "number" ? seconds : lastDurationRef.current;
-    if (duration <= 0) return;
-    lastDurationRef.current = duration;
-    setRemainingSeconds(duration);
+      void playSound(sound);
+      setModeState(nextMode);
+      setStatus("running");
+      runInterval();
+    };
+  }, [runInterval, setModeState]);
+
+  const start = useCallback(() => {
+    if (status === "running") return;
+
+    if (remainingSeconds <= 0) {
+      setModeState(mode);
+    }
+
+    setStatus("running");
+    runInterval();
+  }, [mode, remainingSeconds, runInterval, setModeState, status]);
+
+  const pause = useCallback(() => {
+    if (status !== "running") return;
     clearRunningTimer();
-    start(duration);
-  };
+    setStatus("paused");
+  }, [clearRunningTimer, status]);
+
+  const restart = useCallback(() => {
+    setModeState("focus");
+    setStatus("running");
+    runInterval();
+  }, [runInterval, setModeState]);
 
   useEffect(() => {
     return () => {
       clearRunningTimer();
     };
-  }, []);
+  }, [clearRunningTimer]);
 
   return {
     remainingSeconds,
     formattedTime: formatSeconds(remainingSeconds),
+    mode,
+    status,
     start,
     pause,
     restart,
